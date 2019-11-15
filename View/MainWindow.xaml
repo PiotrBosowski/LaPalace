@@ -1,0 +1,148 @@
+﻿<Window x:Class="LaPalace.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LaPalace.View"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:vm="clr-namespace:LaPalace.ViewModel"
+        mc:Ignorable="d"
+        Title="LaPalace" Height="600" Width="900" MinHeight="450" MinWidth="800">
+
+    <Window.Resources>
+        <BitmapImage x:Key="transparentBackgroundImage"
+                     UriSource="C:/Users/Peter/source/Repos/LaPalace/Pictures/transparentBackground.png"
+                     DecodePixelHeight="1200"/>
+        <BitmapImage x:Key="exampleMarioImage"
+                     UriSource="C:/Users/Peter/source/Repos/LaPalace/Pictures/mario.png"
+                     DecodePixelHeight="1200"/>
+        <SolidColorBrush x:Key="saveButtonBackground" Color="#000066"/>
+        <SolidColorBrush x:Key="saveButtonBoarderColor" Color="#2222ff"/>
+        <SolidColorBrush x:Key="runButtonBackground" Color="#004400"/>
+        <SolidColorBrush x:Key="runButtonBorderColor" Color="#22bb22"/>
+        <vm:LaPalaceVM x:Key="vm"/>
+    </Window.Resources>
+
+    <Grid DataContext="{StaticResource vm}" Background="Black">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Column="0" 
+                     Grid.Row="0"
+                     Grid.ColumnSpan="2"
+                     Height="35">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2.5*"/>
+                <ColumnDefinition Width="2.15*"/>
+                <ColumnDefinition Width="2.15*"/>
+                <ColumnDefinition Width="0.7*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="2.5*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
+            <Button Grid.Column="0"
+                    FontSize="14"
+                    BorderThickness="0"
+                    Command="{Binding ImportCommand}"
+                    Foreground="White"
+                    Background="Black"
+                    Content="Import image"/>
+
+            <ComboBox Grid.Column="1"
+                      SelectedItem="{Binding SelectedAlgorythm}"
+                      ItemsSource="{Binding AlgorythmChoicesTypeValues}"
+                      HorizontalContentAlignment="Center"
+                      VerticalContentAlignment= "Center"
+                      FontSize="14"/>
+
+
+            <ComboBox Grid.Column="2"
+                      SelectedItem="{Binding SelectedLibrary}"
+                      ItemsSource="{Binding LibraryChoicesTypeValues}"
+                      FontSize="14"
+                      HorizontalContentAlignment="Center"
+                      VerticalContentAlignment= "Center"/>
+
+            <TextBox Text="{Binding NumberOfThreads}"
+                     Grid.Column="3" 
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     FontSize="14"/>
+
+            <Button Content="Run algotythm"
+                    Grid.Column="4"
+                    Command="{Binding RunCommand}"
+                    CommandParameter="{Binding ImportedPicture}"
+                    BorderBrush="{StaticResource runButtonBorderColor}"
+                    FontSize="14"
+                    Foreground="White"
+                    Background="{StaticResource runButtonBackground}"/>
+            
+            <Button Content="Generate a report"
+                    Grid.Column="5"
+                    Command="{Binding ReportCommand}"
+                    CommandParameter="{Binding IsResultReady}"
+                    Grid.Row="0"
+                    FontSize="14"
+                    Background="Black"
+                    Foreground="White"/>
+
+            <Button Content="Save image"
+                    Grid.Column="6"
+                    Command="{Binding SaveCommand}"
+                    CommandParameter="{Binding IsResultReady}"
+                    Grid.Row="0"
+                    FontSize="14"
+                    Background="{StaticResource saveButtonBackground}"
+                    BorderBrush="{StaticResource saveButtonBoarderColor}"
+                    Foreground="White"/>
+        </Grid>
+
+        <Border Grid.Column="0"
+                Grid.Row="1"
+                BorderBrush="Black"
+                BorderThickness="1">
+            <Border.Background>
+                <ImageBrush ImageSource="{StaticResource transparentBackgroundImage}"
+                            Stretch="None"/>
+            </Border.Background>
+            <Image Margin="16" Source="{Binding BitmapImageSource}"/>
+        </Border>
+
+        <Border Grid.Column="1"
+                Grid.Row="1"
+                BorderBrush="Black"
+                BorderThickness="1">
+            <Border.Background>
+                <ImageBrush ImageSource="{StaticResource transparentBackgroundImage}"
+                            Stretch="None"/>
+            </Border.Background>
+            <Image Margin="10" Source="{StaticResource exampleMarioImage}"/>
+
+        </Border>
+
+        <Border Grid.Column="0"
+                Grid.Row="2"
+                Grid.ColumnSpan="2"
+                Margin="5 0 0 0"
+                Height="35">
+            <TextBlock VerticalAlignment="Center"
+                       FontSize="12"
+                       Foreground="White"
+                       Text="{Binding BottomText}"
+                       TextWrapping="NoWrap"/>
+        </Border>
+
+    </Grid>
+</Window>

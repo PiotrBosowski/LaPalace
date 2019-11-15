@@ -1,0 +1,16 @@
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\View\MainWindow.g.cs
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\App.g.cs
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\LaPalace_MarkupCompile.cache
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\LaPalace_MarkupCompile.lref
+C:\Users\Peter\source\repos\LaPalace\bin\Debug\LaPalace.exe.config
+C:\Users\Peter\source\repos\LaPalace\bin\Debug\LaPalace.exe
+C:\Users\Peter\source\repos\LaPalace\bin\Debug\LaPalace.pdb
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\LaPalace.csprojAssemblyReference.cache
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\View\MainWindow.baml
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\LaPalace.g.resources
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\LaPalace.Properties.Resources.resources
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\LaPalace.csproj.GenerateResource.cache
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\LaPalace.csproj.CoreCompileInputs.cache
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\LaPalace.exe
+C:\Users\Peter\source\repos\LaPalace\obj\Debug\LaPalace.pdb
