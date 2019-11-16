@@ -29,7 +29,12 @@ namespace LaPalace.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            VM.ReportFunction();
+            ReportFunction();
+        }
+
+        private void ReportFunction()
+        {
+            throw new NotImplementedException();
         }
     }
 }

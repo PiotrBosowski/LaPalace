@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LaPalace.ViewModel.FileOperations;
+using System;
+using System.Drawing;
 using System.Windows.Input;
 
 namespace LaPalace.ViewModel.Commands
@@ -25,7 +27,22 @@ namespace LaPalace.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            VM.ImportFile();
+            ImportFile();
+        }
+
+        public void ImportFile()
+        {
+            string newImagePath = FileOpener.OpenFile();
+            if (VM.ImagePath != newImagePath)
+            {
+                VM.ImagePath = newImagePath;
+                try
+                {
+                    VM.ImportedPicture = new Bitmap(VM.ImagePath);
+                    VM.OutputImage = null;
+                }
+                catch { }
+            }
         }
     }
 }

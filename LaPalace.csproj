@@ -60,6 +60,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\ImageSplitter.cs" />
     <Compile Include="Model\LaPalace.cs" />
     <Compile Include="ViewModel\Commands\ImportCommand.cs" />
     <Compile Include="ViewModel\Commands\ReportCommand.cs" />

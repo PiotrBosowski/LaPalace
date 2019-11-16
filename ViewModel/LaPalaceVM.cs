@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using static LaPalace.Model.LaPalaceFilter;
 
 namespace LaPalace.ViewModel
 {
@@ -21,10 +22,10 @@ namespace LaPalace.ViewModel
             ReportCommand = new ReportCommand(this);
         }
 
-        private string bottomText = "LaPalace app is ready for your orders!";
+        private string bottomText = "Welcome to LaPlace Palace - LaPalace!";
         public string BottomText
         {
-            get { return bottomText; }
+            get => bottomText;
             set
             {
                 bottomText = value;
@@ -70,7 +71,7 @@ namespace LaPalace.ViewModel
         private AlgorythmChoices selectedAlgorythm;
         public AlgorythmChoices SelectedAlgorythm
         {
-            get { return selectedAlgorythm; }
+            get => selectedAlgorythm;
             set
             {
                 selectedAlgorythm = value;
@@ -91,34 +92,6 @@ namespace LaPalace.ViewModel
             }
         }
 
-        public ImportCommand ImportCommand { get; set; }
-        public RunCommand RunCommand { get; set; }
-        public SaveCommand SaveCommand { get; set; }
-        public ReportCommand ReportCommand { get; set; }
-
-        public void RunFunction()
-        {
-            IsResultReady = LaPalaceFilter.ApplyFilter(ImportedPicture);
-        }
-        public void SaveFunction() { }
-
-        public void ReportFunction() { }
-
-        public void ImportFile()
-        {
-            string newImagePath = FileOpener.OpenFile();
-            if (ImagePath != newImagePath)
-            {
-                ImagePath = newImagePath;
-                try
-                {
-                    ImportedPicture = new Bitmap(ImagePath);
-                    IsResultReady = false;
-                }
-                catch { }
-            }
-        }
-
         private BitmapImage bitmapImageSource;
         public BitmapImage BitmapImageSource
         {
@@ -129,6 +102,7 @@ namespace LaPalace.ViewModel
                 OnPropertyChanged("BitmapImageSource");
             }
         }
+
         private Bitmap importedPicture;
         public Bitmap ImportedPicture
         {
@@ -140,6 +114,25 @@ namespace LaPalace.ViewModel
                 OnPropertyChanged("ImportedPicture");
             }
         }
+
+        private Bitmap outputImage;
+                
+        public Bitmap OutputImage
+        {
+            get => outputImage;
+            set
+            {
+                outputImage = value;
+                OnPropertyChanged("OutputImage");
+            }
+        }
+
+
+        public ImportCommand ImportCommand { get; set; }
+        public RunCommand RunCommand { get; set; }
+        public SaveCommand SaveCommand { get; set; }
+        public ReportCommand ReportCommand { get; set; }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)

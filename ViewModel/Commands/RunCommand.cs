@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LaPalace.Model;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Windows;
@@ -35,7 +36,12 @@ namespace LaPalace.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            VM.RunFunction();
+            RunFunction();
+        }
+
+        public void RunFunction()
+        {
+            VM.OutputImage = LaPalaceFilter.Run(VM.ImportedPicture, VM.SelectedAlgorythm, VM.SelectedLibrary, VM.NumberOfThreads);
         }
     }
 }

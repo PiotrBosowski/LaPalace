@@ -11,10 +11,10 @@
 
     <Window.Resources>
         <BitmapImage x:Key="transparentBackgroundImage"
-                     UriSource="C:/Users/Peter/source/Repos/LaPalace/Pictures/transparentBackground.png"
+                     UriSource="D:/c#/LaPalace/Pictures/transparentBackground.png"
                      DecodePixelHeight="1200"/>
         <BitmapImage x:Key="exampleMarioImage"
-                     UriSource="C:/Users/Peter/source/Repos/LaPalace/Pictures/mario.png"
+                     UriSource="D:/c#/LaPalace/Pictures/mario.png"
                      DecodePixelHeight="1200"/>
         <SolidColorBrush x:Key="saveButtonBackground" Color="#000066"/>
         <SolidColorBrush x:Key="saveButtonBoarderColor" Color="#2222ff"/>
@@ -101,7 +101,7 @@
             <Button Content="Save image"
                     Grid.Column="6"
                     Command="{Binding SaveCommand}"
-                    CommandParameter="{Binding IsResultReady}"
+                    CommandParameter="{Binding OutputImage}"
                     Grid.Row="0"
                     FontSize="14"
                     Background="{StaticResource saveButtonBackground}"
@@ -143,6 +143,5 @@
                        Text="{Binding BottomText}"
                        TextWrapping="NoWrap"/>
         </Border>
-
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Input;
 
 namespace LaPalace.ViewModel.Commands
@@ -23,13 +24,21 @@ namespace LaPalace.ViewModel.Commands
 
         public bool CanExecute(object parameter)
         {
-            if (parameter is bool) return (bool)parameter;
-            return false;
+            if (parameter is Bitmap)
+            {
+                return parameter == null ? false : true;
+            }
+            else return false;
         }
 
         public void Execute(object parameter)
         {
-            VM.SaveFunction();
+            SaveFunction();
+        }
+
+        private void SaveFunction()
+        {
+            throw new NotImplementedException();
         }
     }
 }
