@@ -92,47 +92,54 @@ namespace LaPalace.ViewModel
             }
         }
 
-        private BitmapImage bitmapImageSource;
-        public BitmapImage BitmapImageSource
+        private BitmapImage inputImageSource;
+        public BitmapImage InputImageSource
         {
-            get { return bitmapImageSource; }
+            get { return inputImageSource; }
             set
             {
-                bitmapImageSource = value;
-                OnPropertyChanged("BitmapImageSource");
+                inputImageSource = value;
+                OnPropertyChanged("InputImageSource");
+            }
+        }
+        private Bitmap inputImage;
+        public Bitmap InputImage
+        {
+            get { return inputImage; }
+            set
+            {
+                inputImage = value;
+                InputImageSource = inputImage == null ? null : FileOpener.BitmapToImageSource(inputImage);
+                OnPropertyChanged("InputImage");
             }
         }
 
-        private Bitmap importedPicture;
-        public Bitmap ImportedPicture
+        private BitmapImage outputImageSource;
+        public BitmapImage OutputImageSource
         {
-            get { return importedPicture; }
+            get { return outputImageSource; }
             set
             {
-                importedPicture = value;
-                BitmapImageSource = importedPicture == null ? null : FileOpener.BitmapToImageSource(importedPicture);
-                OnPropertyChanged("ImportedPicture");
+                outputImageSource = value;
+                OnPropertyChanged("OutputImageSource");
             }
         }
-
         private Bitmap outputImage;
-                
         public Bitmap OutputImage
         {
             get => outputImage;
             set
             {
                 outputImage = value;
+                OutputImageSource = outputImage == null ? null : FileOpener.BitmapToImageSource(outputImage);
                 OnPropertyChanged("OutputImage");
             }
         }
-
 
         public ImportCommand ImportCommand { get; set; }
         public RunCommand RunCommand { get; set; }
         public SaveCommand SaveCommand { get; set; }
         public ReportCommand ReportCommand { get; set; }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)

@@ -8,7 +8,8 @@ namespace LaPalace.Model
     {
         internal static List<Bitmap> Split(Bitmap sourceImg, int threadsNo)
         {
-            throw new NotImplementedException();
+            if (threadsNo == 1) return new List<Bitmap> { sourceImg };
+            else return null;
         }
     }
 }

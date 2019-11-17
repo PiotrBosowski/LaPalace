@@ -49,38 +49,21 @@ namespace LaPalace.Model
         private Bitmap Run()
         {
             Bitmap outputBitmap = new Bitmap(inputBitmap);
-            List<Bitmap> splittedInputBitmap = ImageSplitter.Split(inputBitmap, threadsNo);
-            List<Bitmap> splittedOutputBitmap = ImageSplitter.Split(outputBitmap, threadsNo);
-            Transform(splittedInputBitmap, splittedOutputBitmap);
-            return null;
+            //List<Bitmap> splittedInputBitmap = ImageSplitter.Split(inputBitmap, threadsNo);
+            //List<Bitmap> splittedOutputBitmap = ImageSplitter.Split(outputBitmap, threadsNo);
+            //Transform(splittedInputBitmap, splittedOutputBitmap);
+            return CppTest.TransformSingleImage(inputBitmap, outputBitmap, inputBitmap.Height, inputBitmap.Width);
         }
 
-        private void Transform(List<Bitmap> input, List<Bitmap> output)
-        {
-            for(int i = 0; i < input.Count; i++)
-            {
-                TransformSingleBitmap(input[i], output[i]);
-            }
+        // private void Transform(List<Bitmap> input, List<Bitmap> output)
+        // {
+        //for(int i = 0; i < input.Count; i++)
+        //{
+        //        TransformSingleBitmap(input[0], output[0]);
+        // }
+        //return null;
 
-        }
-
-        public static byte[] ImageToByte(Image img)
-        {
-            ImageConverter converter = new ImageConverter();
-            return (byte[])converter.ConvertTo(img, typeof(byte[]));
-        }
-
-        private void TransformSingleBitmap(Bitmap input, Bitmap output)
-        {
-            for(int i = 1; i < input.Height - 1; i++)
-            {
-                for(int j = 1; j < input.Width - 1; j++)
-                {
-                    //output.
-                }
-
-            }
-        }
+        //}
 
         private Bitmap inputBitmap;
 
@@ -111,6 +94,7 @@ namespace LaPalace.Model
     internal class LaPalaceAlgorythm
     {
         protected int[,] transformatMatrix;
+        public int[,] TransformMatrix { get; }
 
         public Bitmap RunASM()
         {

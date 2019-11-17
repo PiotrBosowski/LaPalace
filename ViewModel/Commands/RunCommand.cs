@@ -41,7 +41,7 @@ namespace LaPalace.ViewModel.Commands
 
         public void RunFunction()
         {
-            VM.OutputImage = LaPalaceFilter.Run(VM.ImportedPicture, VM.SelectedAlgorythm, VM.SelectedLibrary, VM.NumberOfThreads);
+            VM.OutputImage = LaPalaceFilter.Run(VM.InputImage, VM.SelectedAlgorythm, VM.SelectedLibrary, VM.NumberOfThreads);
         }
     }
 }

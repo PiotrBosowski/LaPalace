@@ -13,9 +13,6 @@
         <BitmapImage x:Key="transparentBackgroundImage"
                      UriSource="D:/c#/LaPalace/Pictures/transparentBackground.png"
                      DecodePixelHeight="1200"/>
-        <BitmapImage x:Key="exampleMarioImage"
-                     UriSource="D:/c#/LaPalace/Pictures/mario.png"
-                     DecodePixelHeight="1200"/>
         <SolidColorBrush x:Key="saveButtonBackground" Color="#000066"/>
         <SolidColorBrush x:Key="saveButtonBoarderColor" Color="#2222ff"/>
         <SolidColorBrush x:Key="runButtonBackground" Color="#004400"/>
@@ -83,7 +80,7 @@
             <Button Content="Run algotythm"
                     Grid.Column="4"
                     Command="{Binding RunCommand}"
-                    CommandParameter="{Binding ImportedPicture}"
+                    CommandParameter="{Binding InputImage}"
                     BorderBrush="{StaticResource runButtonBorderColor}"
                     FontSize="14"
                     Foreground="White"
@@ -117,7 +114,7 @@
                 <ImageBrush ImageSource="{StaticResource transparentBackgroundImage}"
                             Stretch="None"/>
             </Border.Background>
-            <Image Margin="16" Source="{Binding BitmapImageSource}"/>
+            <Image Margin="10" Source="{Binding InputImageSource}"/>
         </Border>
 
         <Border Grid.Column="1"
@@ -128,7 +125,7 @@
                 <ImageBrush ImageSource="{StaticResource transparentBackgroundImage}"
                             Stretch="None"/>
             </Border.Background>
-            <Image Margin="10" Source="{StaticResource exampleMarioImage}"/>
+            <Image Margin="10" Source="{Binding OutputImageSource}"/>
 
         </Border>
 

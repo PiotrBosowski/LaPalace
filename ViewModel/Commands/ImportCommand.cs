@@ -38,8 +38,7 @@ namespace LaPalace.ViewModel.Commands
                 VM.ImagePath = newImagePath;
                 try
                 {
-                    VM.ImportedPicture = new Bitmap(VM.ImagePath);
-                    VM.OutputImage = null;
+                    VM.InputImage = new Bitmap(VM.ImagePath);
                 }
                 catch { }
             }
