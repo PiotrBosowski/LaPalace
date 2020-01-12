@@ -11,7 +11,7 @@
 
     <Window.Resources>
         <BitmapImage x:Key="transparentBackgroundImage"
-                     UriSource="D:/c#/LaPalace/Pictures/transparentBackground.png"
+                     UriSource="D:/c#/LaPalace/LaPalace/Pictures/transparentBackground.png"
                      DecodePixelHeight="1200"/>
         <SolidColorBrush x:Key="saveButtonBackground" Color="#000066"/>
         <SolidColorBrush x:Key="saveButtonBoarderColor" Color="#2222ff"/>
