@@ -419,7 +419,7 @@ loopInn:
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; WRITING TO OUTPUT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	;call CutoffColors ; cmp r12 cutting values exceeding 0 and 255:
+	call CutoffColors ; cmp r12 cutting values exceeding 0 and 255:
 
 	; writing values to output image:
 
@@ -433,14 +433,14 @@ loopInn:
 
 	mov R10D, [R8]    ; pixel -> R10
 	xor R12, R12
+	mov R12B, R10B ; moving first byte of pixel to R12
+	shl R12, 8
+	shr R10, 8
 	mov R12B, R10B ; moving second byte of pixel to R12
 	shl R12, 8
 	shr R10, 8
 	mov R12B, R10B ; moving third byte of pixel to R12
-	shl R12, 8
-	shr R10, 8
-	mov R12B, R10B ; moving fourth byte of pixel to R12
-	mov R8D, R12D
+	mov [R8], R12D ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Xddd swapping colors currently
 
 
 
