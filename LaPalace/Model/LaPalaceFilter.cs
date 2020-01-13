@@ -18,7 +18,7 @@ namespace LaPalace.Model
         readonly int[] HORIZ = { 0, -1, 0, 0, 2, 0, 0, -1, 0 };
         readonly int[] VERTIC = { 0, 0, 0, -1, 2, -1, 0, 0, 0 };
 
-        int[] pattern;
+        private int[] pattern;
         LibraryChoices library;
         private Bitmap input;
         private int threadsNo;
@@ -65,25 +65,24 @@ namespace LaPalace.Model
             //Transform(splittedInputBitmap, splittedOutputBitmap);
             BitmapData inputData = input.LockBits(new Rectangle(0, 0, input.Width, input.Height), ImageLockMode.ReadOnly, input.PixelFormat);
             BitmapData outputData = output.LockBits(new Rectangle(0, 0, output.Width, output.Height), ImageLockMode.WriteOnly, output.PixelFormat);
-            byte* input_scan0 = (byte*)inputData.Scan0.ToPointer();
-            byte* output_scan0 = (byte*)outputData.Scan0.ToPointer();
-            if(library == LibraryChoices.ASM)
+            byte* inputPtr = (byte*)inputData.Scan0.ToPointer();
+            byte* outputPtr = (byte*)outputData.Scan0.ToPointer();
+            int height = input.Height;
+            int width = input.Width;
+            int inputStr = inputData.Stride;
+            int outputStr = outputData.Stride;
+            int inputGPP = Image.GetPixelFormatSize(input.PixelFormat);
+            int outputGPP = Image.GetPixelFormatSize(output.PixelFormat);
+            if (library == LibraryChoices.ASM)
             {
-                try
-                {
-                    TransformImageAsm(input_scan0, output_scan0, input.Height, input.Width, inputData.Stride, outputData.Stride, Image.GetPixelFormatSize(input.PixelFormat), Image.GetPixelFormatSize(output.PixelFormat), pattern);
-                }
-                catch(Exception)
-                {
-
-                }
+                TransformImageAsm(inputPtr, outputPtr, height, width, inputStr, outputStr, inputGPP, outputGPP, pattern);
             }
             else if (library == LibraryChoices.C)
-                TransformImageCpp(input_scan0, output_scan0, input.Height, input.Width, inputData.Stride, outputData.Stride, Image.GetPixelFormatSize(input.PixelFormat), Image.GetPixelFormatSize(output.PixelFormat), pattern);
+                TransformImageCpp(inputPtr, outputPtr, height, width, inputStr, outputStr, inputGPP, outputGPP, pattern);
             else
             { //add benchmarking ...
-                TransformImageAsm(input_scan0, output_scan0, input.Height, input.Width, inputData.Stride, outputData.Stride, Image.GetPixelFormatSize(input.PixelFormat), Image.GetPixelFormatSize(output.PixelFormat), pattern);
-                TransformImageCpp(input_scan0, output_scan0, input.Height, input.Width, inputData.Stride, outputData.Stride, Image.GetPixelFormatSize(input.PixelFormat), Image.GetPixelFormatSize(output.PixelFormat), pattern);
+                TransformImageAsm(inputPtr, outputPtr, input.Height, input.Width, inputData.Stride, outputData.Stride, Image.GetPixelFormatSize(input.PixelFormat), Image.GetPixelFormatSize(output.PixelFormat), pattern);
+                TransformImageCpp(inputPtr, outputPtr, input.Height, input.Width, inputData.Stride, outputData.Stride, Image.GetPixelFormatSize(input.PixelFormat), Image.GetPixelFormatSize(output.PixelFormat), pattern);
             }
             input.UnlockBits(inputData);
             output.UnlockBits(outputData);
@@ -93,7 +92,7 @@ namespace LaPalace.Model
         [DllImport(@"D:\c#\LaPalace\LaPalace\x64\Debug\LaPlace_Cpplib.dll", CharSet = CharSet.Unicode, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private extern static void TransformImageCpp(byte* input, byte* output, int height, int width, int inputStride, int outputStride, int inputBitsPerPixel, int outputBitsPerPixel, int[] pattern);
 
-        [DllImport(@"D:\c#\LaPalace\LaPalace\x64\Debug\LaPlace_Asmlib.dll", CharSet = CharSet.Unicode, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"D:\c#\LaPalace\LaPalace\x64\Debug\LaPlace_Asmlib.dll", CharSet = CharSet.Unicode, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
         private extern static void TransformImageAsm(byte* input, byte* output, int height, int width, int inputStride, int outputStride, int inputBitsPerPixel, int outputBitsPerPixel, int[] pattern);
 
         public enum AlgorythmChoices

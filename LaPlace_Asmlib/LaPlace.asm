@@ -45,47 +45,45 @@ BlueOk:
 	ret
 CutoffColors endp
 
+
+
 ; Procedude transforms single image by given pattern
 ; @returns nothing
-; @params               RCX          RDX            R8             R9        [rbp+48]         [rbp+48]        [rbp+64]         [rbp+72]       [rbp+80]
+; @params          [rbp-72]      [rbp-80]      [rbp-88]      [rbp-96]        [rbp+48]         [rbp+56]        [rbp+64]         [rbp+72]       [rbp+80]
 Transform proc; QWORD input, QWORD output, DWORD picHei, DWORD picWid, DWORD inputStr, DWORD outputStr, DWORD inputBPP, DWORD outputBPP, QWORD pattern
-; @paramsInside:    [rbp-8]      [rbp-16]      [rbp-24]      [rbp-32]        [rbp-40]         [rbp-48]        [rbp-56]         [rbp-64]       [rbp-72]
 	
-	push rbp      ; saving stack pointer
-	mov rbp, rsp  ;
-	mov R13D, 0   ; int newRedValue = 0;
-	mov R14D, 0   ; int newGreenValue = 0;
-	mov R15D, 0   ; int newBlueValue = 0;
-	   
-	;newColorValue += (unsigned char)pixel(input, j - 1, i - 1, inputStride, inputBitsPerPixel)[0] * pattern[0];
+	;RBX, RBP, RDI, RSI, RSP, R12, R13, R14, R15
 
-	push rcx ; input [rbp-8]      ; saving parameters
-	push rdx ; output [rbp-16]    ;
-	mov r10, r8
-	dec r10
-	push r10 ; picHei [rbp-24]     ;
-	mov r10, r9
-	dec r10
-	push r10 ; picWid [rbp-32]    ;
-	mov rax, [rbp+48]             ;
-	push rax ; inputStr [rbp-40]  ;
-	mov rax, [rbp+56]             ;
-	push rax ; outputStr [rbp-48] ;
-	mov rax, [rbp+64]             ;
-	push rax ; inputBPP [rbp-56]  ;
-	mov rax, [rbp+72]             ;
-	push rax ; outputBPP [rbp-64] ;
-	mov rax, [rbp+80]             ;
-	push rax ; pattern [rbp-72]   ;
-	push rbx
+	push RBP      ; saving stack pointer
+	mov RBP, RSP  ;
+	push RBX
+	push RDI
+	push RSI
+	push RSP
+	push R12
+	push R13
+	push R14
+	push R15
+	
+	push RCX
+	push RDX
+	push R8
+	push R9
 
-	; petla zewnetrzna
+;	mov rax, [rbp-72]
+;	mov rax, [rbp-80]
+;	mov rax, [rbp-88]
+;	mov rax, [rbp-96]
+;	mov rax, [rbp+48]
+;	mov rax, [rbp+56]
+;	mov rax, [rbp+64]
+;	mov rax, [rbp+72]
+;	mov rax, [rbp+80]
 
 	mov rcx, 0
 loopOut:
 	inc rcx
 
-	; petla wewnetrzna
 	mov rdx, 0
 loopInn:
 	inc rdx
@@ -95,67 +93,341 @@ loopInn:
 	mov R15D, 0   ; newBlueValue = 0;
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; TOP LEFT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	mov r8, [rbp-8]    ; input     ; setting parameters
-	mov r9d, edx       ; inner counter - j (width/x)
-	mov r10d, ecx      ; outer counter - i (height/y)
-	mov r11d, [rbp-40] ; inputStr
-	mov r12d, [rbp-56] ; BPP
+	
+	mov r8, [rbp-72]   ; input
+	mov r9d, edx       ; inner counter - j/width/x
+	mov r10d, ecx      ; outer counter - i/height/y
+	mov r11d, [rbp+48] ; inputStr
+	mov r12d, [rbp+64] ; inputBPP
 
-	dec r9d   ; j-1  ; left
-	dec r10d  ; i-1  ; top
+	dec r9d   ; j-1  ; left ;;;;;;;;;;;;;;;;;;;;;;;USUNAC NIEPOTRZEBNE
+	dec r10d  ; i-1  ; top  ;;;;;;;;;;;;;;;;;;;;;;;;;;;ASDASDSDsd
 
 	;                      R8       R9      R10           R11        R12
 	call Pixel; qword pointer, dword x, dword y, dword stride, dword BPP ; RETURNS TO R8
 
-	mov RAX, [RBP-72] ; Pattern -> RBX
-	mov R11W, [RAX]   ; Pattern[0] -> R11
 	mov R10D, [R8]    ; pixel -> R10
-	xor R12, R12
-	mov R12B, R10B ; moving last byte of pixel to R12
+	mov RAX, [RBP+80] ; Pattern -> RBX
+	mov R11W, [RAX]   ; Pattern[0] -> R11
+	xor R12, R12      ;
+	mov R12B, R10B    ; moving last byte (red color) of pixel to R12
 	
-	imul R12W, R11W; colorRed * pattern[0] -> R11
+	imul R12W, R11W ; colorRed * pattern[0] -> R11
 	add R13W, R12W  ; newRedValue += pixel(input, j - 1, i - 1, inputStr, inputBPP)[0] * pattern[0];
 
-	shr R10, 8
-	xor R12, R12
-	mov R12B, R10B
-	imul R12W, R11W
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
 	add R14W, R12W  ; newGreenValue += pixel(input, j - 1, i - 1, inputStr, inputBPP)[1] * pattern[0];
-
-	shr R10, 8
-	xor R12, R12
-	mov R12B, R10B
-	imul R12W, R11W
+	
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
 	add R15W, R12W  ; newBlueValue += pixel(input, j - 1, i - 1, inputStr, inputBPP)[2] * pattern[0];
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; TOP CENTER ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		
+	mov r8, [rbp-72]   ; input
+	mov r9d, edx       ; inner counter - j/width/x
+	mov r10d, ecx      ; outer counter - i/height/y
+	mov r11d, [rbp+48] ; inputStr
+	mov r12d, [rbp+64] ; inputBPP
+
+	;dec r9d   ; j ;;;;;;;;;;;;;;;;;;;;;;;;;;;;USUNAC NIEPOTRZEBNE
+	dec r10d   ; i-1  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+
+	;                      R8       R9      R10           R11        R12
+	call Pixel; qword pointer, dword x, dword y, dword stride, dword BPP ; RETURNS TO R8
+
+	mov R10D, [R8]    ; pixel -> R10
+	mov RAX, [RBP+80] ; Pattern -> RBX
+	mov R11W, [RAX+4] ; Pattern[1] -> R11 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; RAX + _
+	xor R12, R12      ;
+	mov R12B, R10B    ; moving last byte (red color) of pixel to R12
+	
+	imul R12W, R11W ; colorRed * pattern[1] -> R11
+	add R13W, R12W  ; newRedValue += pixel(input, j    , i - 1, inputStr, inputBPP)[0] * pattern[0];
+
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R14W, R12W  ; newGreenValue += pixel(input, j    , i - 1, inputStr, inputBPP)[1] * pattern[0];
+	
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R15W, R12W  ; newBlueValue += pixel(input, j    , i - 1, inputStr, inputBPP)[2] * pattern[0];
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; TOP RIGHT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+	mov r8, [rbp-72]   ; input
+	mov r9d, edx       ; inner counter - j/width/x
+	mov r10d, ecx      ; outer counter - i/height/y
+	mov r11d, [rbp+48] ; inputStr
+	mov r12d, [rbp+64] ; inputBPP
+
+	inc r9d   ; j+1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;USUNAC NIEPOTRZEBNE
+	dec r10d  ; i-1  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+
+	;                      R8       R9      R10           R11        R12
+	call Pixel; qword pointer, dword x, dword y, dword stride, dword BPP ; RETURNS TO R8
+
+	mov R10D, [R8]    ; pixel -> R10
+	mov RAX, [RBP+80] ; Pattern -> RBX
+	mov R11W, [RAX+8] ; Pattern[1] -> R11 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; RAX + _
+	xor R12, R12      ;
+	mov R12B, R10B    ; moving last byte (red color) of pixel to R12
+	
+	imul R12W, R11W ; colorRed * pattern[1] -> R11
+	add R13W, R12W  ; newRedValue += pixel(input, j    , i - 1, inputStr, inputBPP)[0] * pattern[0];
+
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R14W, R12W  ; newGreenValue += pixel(input, j    , i - 1, inputStr, inputBPP)[1] * pattern[0];
+	
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R15W, R12W  ; newBlueValue += pixel(input, j    , i - 1, inputStr, inputBPP)[2] * pattern[0];
+
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; CENTER LEFT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; CENTER ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	mov r8, [rbp-72]   ; input
+	mov r9d, edx       ; inner counter - j/width/x
+	mov r10d, ecx      ; outer counter - i/height/y
+	mov r11d, [rbp+48] ; inputStr
+	mov r12d, [rbp+64] ; inputBPP
+
+	dec r9d   ; j-1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;USUNAC NIEPOTRZEBNE
+	;dec r10d  ; i  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+
+	;                      R8       R9      R10           R11        R12
+	call Pixel; qword pointer, dword x, dword y, dword stride, dword BPP ; RETURNS TO R8
+
+	mov R10D, [R8]    ; pixel -> R10
+	mov RAX, [RBP+80] ; Pattern -> RBX
+	mov R11W, [RAX+12] ; Pattern[1] -> R11 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; RAX + _
+	xor R12, R12      ;
+	mov R12B, R10B    ; moving last byte (red color) of pixel to R12
+	
+	imul R12W, R11W ; colorRed * pattern[1] -> R11
+	add R13W, R12W  ; newRedValue += pixel(input, j    , i - 1, inputStr, inputBPP)[0] * pattern[0];
+
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R14W, R12W  ; newGreenValue += pixel(input, j    , i - 1, inputStr, inputBPP)[1] * pattern[0];
+	
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R15W, R12W  ; newBlueValue += pixel(input, j    , i - 1, inputStr, inputBPP)[2] * pattern[0];
+
+
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; CENTER CENTER ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	mov r8, [rbp-72]   ; input
+	mov r9d, edx       ; inner counter - j/width/x
+	mov r10d, ecx      ; outer counter - i/height/y
+	mov r11d, [rbp+48] ; inputStr
+	mov r12d, [rbp+64] ; inputBPP
+
+	;inc r9d   ; j-1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;USUNAC NIEPOTRZEBNE
+	;dec r10d  ; i-1  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+
+	;                      R8       R9      R10           R11        R12
+	call Pixel; qword pointer, dword x, dword y, dword stride, dword BPP ; RETURNS TO R8
+
+	mov R10D, [R8]    ; pixel -> R10
+	mov RAX, [RBP+80] ; Pattern -> RBX
+	mov R11W, [RAX+16] ; Pattern[1] -> R11 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; RAX + _
+	xor R12, R12      ;
+	mov R12B, R10B    ; moving last byte (red color) of pixel to R12
+	
+	imul R12W, R11W ; colorRed * pattern[1] -> R11
+	add R13W, R12W  ; newRedValue += pixel(input, j    , i - 1, inputStr, inputBPP)[0] * pattern[0];
+
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R14W, R12W  ; newGreenValue += pixel(input, j    , i - 1, inputStr, inputBPP)[1] * pattern[0];
+	
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R15W, R12W  ; newBlueValue += pixel(input, j    , i - 1, inputStr, inputBPP)[2] * pattern[0];
+
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; CENTER RIGHT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+	mov r8, [rbp-72]   ; input
+	mov r9d, edx       ; inner counter - j/width/x
+	mov r10d, ecx      ; outer counter - i/height/y
+	mov r11d, [rbp+48] ; inputStr
+	mov r12d, [rbp+64] ; inputBPP
+
+	inc r9d   ; j+1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;USUNAC NIEPOTRZEBNE
+	;dec r10d  ; i  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+
+	;                      R8       R9      R10           R11        R12
+	call Pixel; qword pointer, dword x, dword y, dword stride, dword BPP ; RETURNS TO R8
+
+	mov R10D, [R8]    ; pixel -> R10
+	mov RAX, [RBP+80] ; Pattern -> RBX
+	mov R11W, [RAX+20] ; Pattern[1] -> R11 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; RAX + _
+	xor R12, R12      ;
+	mov R12B, R10B    ; moving last byte (red color) of pixel to R12
+	
+	imul R12W, R11W ; colorRed * pattern[1] -> R11
+	add R13W, R12W  ; newRedValue += pixel(input, j    , i - 1, inputStr, inputBPP)[0] * pattern[0];
+
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R14W, R12W  ; newGreenValue += pixel(input, j    , i - 1, inputStr, inputBPP)[1] * pattern[0];
+	
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R15W, R12W  ; newBlueValue += pixel(input, j    , i - 1, inputStr, inputBPP)[2] * pattern[0];
+
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; BOT LEFT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	mov r8, [rbp-72]   ; input
+	mov r9d, edx       ; inner counter - j/width/x
+	mov r10d, ecx      ; outer counter - i/height/y
+	mov r11d, [rbp+48] ; inputStr
+	mov r12d, [rbp+64] ; inputBPP
+
+	dec r9d   ; j-1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;USUNAC NIEPOTRZEBNE
+	inc r10d  ; i+1  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+
+	;                      R8       R9      R10           R11        R12
+	call Pixel; qword pointer, dword x, dword y, dword stride, dword BPP ; RETURNS TO R8
+
+	mov R10D, [R8]    ; pixel -> R10
+	mov RAX, [RBP+80] ; Pattern -> RBX
+	mov R11W, [RAX+24] ; Pattern[1] -> R11 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; RAX + _
+	xor R12, R12      ;
+	mov R12B, R10B    ; moving last byte (red color) of pixel to R12
+	
+	imul R12W, R11W ; colorRed * pattern[1] -> R11
+	add R13W, R12W  ; newRedValue += pixel(input, j    , i - 1, inputStr, inputBPP)[0] * pattern[0];
+
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R14W, R12W  ; newGreenValue += pixel(input, j    , i - 1, inputStr, inputBPP)[1] * pattern[0];
+	
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R15W, R12W  ; newBlueValue += pixel(input, j    , i - 1, inputStr, inputBPP)[2] * pattern[0];
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; BOT CENTER ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+		mov r8, [rbp-72]   ; input
+	mov r9d, edx       ; inner counter - j/width/x
+	mov r10d, ecx      ; outer counter - i/height/y
+	mov r11d, [rbp+48] ; inputStr
+	mov r12d, [rbp+64] ; inputBPP
+
+	;dec r9d   ; j ;;;;;;;;;;;;;;;;;;;;;;;;;;;;USUNAC NIEPOTRZEBNE
+	inc r10d  ; i+1  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+
+	;                      R8       R9      R10           R11        R12
+	call Pixel; qword pointer, dword x, dword y, dword stride, dword BPP ; RETURNS TO R8
+
+	mov R10D, [R8]    ; pixel -> R10
+	mov RAX, [RBP+80] ; Pattern -> RBX
+	mov R11W, [RAX+28] ; Pattern[1] -> R11 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; RAX + _
+	xor R12, R12      ;
+	mov R12B, R10B    ; moving last byte (red color) of pixel to R12
+	
+	imul R12W, R11W ; colorRed * pattern[1] -> R11
+	add R13W, R12W  ; newRedValue += pixel(input, j    , i - 1, inputStr, inputBPP)[0] * pattern[0];
+
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R14W, R12W  ; newGreenValue += pixel(input, j    , i - 1, inputStr, inputBPP)[1] * pattern[0];
+	
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R15W, R12W  ; newBlueValue += pixel(input, j    , i - 1, inputStr, inputBPP)[2] * pattern[0];
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; BOT RIGHT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+		mov r8, [rbp-72]   ; input
+	mov r9d, edx       ; inner counter - j/width/x
+	mov r10d, ecx      ; outer counter - i/height/y
+	mov r11d, [rbp+48] ; inputStr
+	mov r12d, [rbp+64] ; inputBPP
+
+	inc r9d   ; j+1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;USUNAC NIEPOTRZEBNE
+	inc r10d  ; i+1  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+
+	;                      R8       R9      R10           R11        R12
+	call Pixel; qword pointer, dword x, dword y, dword stride, dword BPP ; RETURNS TO R8
+
+	mov R10D, [R8]    ; pixel -> R10
+	mov RAX, [RBP+80] ; Pattern -> RBX
+	mov R11W, [RAX+32] ; Pattern[1] -> R11 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; RAX + _
+	xor R12, R12      ;
+	mov R12B, R10B    ; moving last byte (red color) of pixel to R12
+	
+	imul R12W, R11W ; colorRed * pattern[1] -> R11
+	add R13W, R12W  ; newRedValue += pixel(input, j    , i - 1, inputStr, inputBPP)[0] * pattern[0];
+
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R14W, R12W  ; newGreenValue += pixel(input, j    , i - 1, inputStr, inputBPP)[1] * pattern[0];
+	
+	shr R10, 8      ;
+	xor R12, R12    ;
+	mov R12B, R10B  ;
+	imul R12W, R11W ;
+	add R15W, R12W  ; newBlueValue += pixel(input, j    , i - 1, inputStr, inputBPP)[2] * pattern[0];
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; WRITING TO OUTPUT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-	call CutoffColors  ; cmp r12 cutting values exceeding 0 and 255:
+	;call CutoffColors ; cmp r12 cutting values exceeding 0 and 255:
 
 	; writing values to output image:
 
-	mov r8, [rbp-16]    ; output     ; setting parameters
+	mov r8, [rbp-80]   ; output     ; setting parameters
 	mov r9d, edx       ; inner counter - j (width/x)
 	mov r10d, ecx      ; outer counter - i (height/y)
-	mov r11d, [rbp-48] ; outputStr
-	mov r12d, [rbp-64] ; outputBPP
+	mov r11d, [rbp+56] ; outputStr
+	mov r12d, [rbp+72] ; outputBPP
 
 	call Pixel; qword pointer, dword x, dword y, dword stride, dword BPP ; RETURNS TO R8
 
@@ -170,27 +442,37 @@ loopInn:
 	mov R12B, R10B ; moving fourth byte of pixel to R12
 	mov R8D, R12D
 
+
+
 	;;;;;;;;;;;;loops;;;;;;;;;;;;;;
 
-	cmp rdx, [rbp-32]
+	mov rax, [rbp-96] ; picWid
+	dec rax
+	dec rax
+	cmp rdx, rax
 	jl loopInn
 
-	cmp rcx, [rbp-24]
+	mov rax, [rbp-88] ; picHei
+	dec rax
+	dec rax
+	cmp rcx, rax
 	jl loopOut
 
-	; TODO wyjebac to kurwa
-	pop rbx
 	pop rax
 	pop rax
 	pop rax
 	pop rax
-	pop rax
-	pop rax
-	pop rax
-	pop rax
-	pop rax
-	; popping base pointer
-	pop rbp
+
+	pop R15
+	pop R14
+	pop R13
+	pop R12
+	pop RSP
+	pop RSI
+	pop RDI
+	pop RBX
+	pop RBP
+
 	ret
 Transform endp
 end
