@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 
 namespace LaPalace.Model
@@ -55,6 +56,7 @@ namespace LaPalace.Model
             return filter.Run();
         }
 
+        //[HandleProcessCorruptedStateExceptions]
         private Bitmap Run()
         {
             Bitmap output = new Bitmap(input);
@@ -66,7 +68,16 @@ namespace LaPalace.Model
             byte* input_scan0 = (byte*)inputData.Scan0.ToPointer();
             byte* output_scan0 = (byte*)outputData.Scan0.ToPointer();
             if(library == LibraryChoices.ASM)
-                TransformImageAsm(input_scan0, output_scan0, input.Height, input.Width, inputData.Stride, outputData.Stride, Image.GetPixelFormatSize(input.PixelFormat), Image.GetPixelFormatSize(output.PixelFormat), pattern);
+            {
+                try
+                {
+                    TransformImageAsm(input_scan0, output_scan0, input.Height, input.Width, inputData.Stride, outputData.Stride, Image.GetPixelFormatSize(input.PixelFormat), Image.GetPixelFormatSize(output.PixelFormat), pattern);
+                }
+                catch(Exception)
+                {
+
+                }
+            }
             else if (library == LibraryChoices.C)
                 TransformImageCpp(input_scan0, output_scan0, input.Height, input.Width, inputData.Stride, outputData.Stride, Image.GetPixelFormatSize(input.PixelFormat), Image.GetPixelFormatSize(output.PixelFormat), pattern);
             else
