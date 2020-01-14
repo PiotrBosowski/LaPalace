@@ -3,9 +3,9 @@ char* pixel(char* scan0, int x, int y, int stride, int bitsPerPixel)
 	return scan0 + y * stride + x * bitsPerPixel / 8;
 }
 
-extern "C" __declspec(dllexport) void TransformImageCpp(char * input, char * output, int height, int width, int inputStride, int outputStride, int inputBitsPerPixel, int outputBitsPerPixel, int* pattern)
+extern "C" __declspec(dllexport) void TransformImageCpp(char * input, char * output, int height, int width, int inputStride, int outputStride, int inputBitsPerPixel, int outputBitsPerPixel, int* pattern, int beginLine, int endLine)
 {
-	for (int i = 1; i < height - 1; ++i)
+	for (int i = beginLine + 1; i < endLine - 1; ++i)
 		for (int j = 1; j < width - 1; ++j)
 		{
 			int newColorValue = 0;

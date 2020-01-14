@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Windows;
 using System.Windows.Input;
 
 namespace LaPalace.ViewModel.Commands
@@ -38,7 +39,7 @@ namespace LaPalace.ViewModel.Commands
 
         private void SaveFunction()
         {
-            throw new NotImplementedException();
+            MessageBoxResult result = MessageBox.Show("no elo");
         }
     }
 }

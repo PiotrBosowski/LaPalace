@@ -1,5 +1,6 @@
 ﻿using LaPalace.Model;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows;
@@ -41,7 +42,20 @@ namespace LaPalace.ViewModel.Commands
 
         public void RunFunction()
         {
-            VM.OutputImage = LaPalaceFilter.Run(VM.InputImage, VM.SelectedAlgorythm, VM.SelectedLibrary, VM.NumberOfThreads);
+            double pixelNo = VM.InputImage.Size.Height * VM.InputImage.Size.Width;
+            Stopwatch sw = new Stopwatch();
+            try
+            {
+                sw.Start();
+                VM.OutputImage = LaPalaceFilter.Run(VM.InputImage, VM.SelectedAlgorythm, VM.SelectedLibrary, VM.NumberOfThreads);
+                sw.Stop();
+                VM.BottomText = $"Processed {String.Format("{0:n0}", pixelNo)} pixels in {sw.ElapsedMilliseconds} ms using {VM.NumberOfThreads} thread/s.";
+            }
+            catch (Exception)
+            {
+                sw.Stop();
+                VM.BottomText = $"Processing {String.Format("{0:n0}", pixelNo)} pixels took {sw.ElapsedMilliseconds} ms before cancellation.";
+            }
         }
     }
 }

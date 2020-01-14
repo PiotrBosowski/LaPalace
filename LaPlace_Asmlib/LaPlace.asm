@@ -49,8 +49,8 @@ CutoffColors endp
 
 ; Procedude transforms single image by given pattern
 ; @returns nothing
-; @params          [rbp-72]      [rbp-80]      [rbp-88]      [rbp-96]        [rbp+48]         [rbp+56]        [rbp+64]         [rbp+72]       [rbp+80]
-Transform proc; QWORD input, QWORD output, DWORD picHei, DWORD picWid, DWORD inputStr, DWORD outputStr, DWORD inputBPP, DWORD outputBPP, QWORD pattern
+; @params          [rbp-72]      [rbp-80]      [rbp-88]      [rbp-96]        [rbp+48]         [rbp+56]        [rbp+64]         [rbp+72]       [rbp+80],        [rbp+88],      [rbp+96]
+Transform proc; QWORD input, QWORD output, DWORD picHei, DWORD picWid, DWORD inputStr, DWORD outputStr, DWORD inputBPP, DWORD outputBPP, QWORD pattern, DWORD beginLine, DWORD endLine
 	
 	;RBX, RBP, RDI, RSI, RSP, R12, R13, R14, R15
 
@@ -70,17 +70,7 @@ Transform proc; QWORD input, QWORD output, DWORD picHei, DWORD picWid, DWORD inp
 	push R8
 	push R9
 
-;	mov rax, [rbp-72]
-;	mov rax, [rbp-80]
-;	mov rax, [rbp-88]
-;	mov rax, [rbp-96]
-;	mov rax, [rbp+48]
-;	mov rax, [rbp+56]
-;	mov rax, [rbp+64]
-;	mov rax, [rbp+72]
-;	mov rax, [rbp+80]
-
-	mov rcx, 0
+	mov rcx, [rbp+88]
 loopOut:
 	inc rcx
 
@@ -419,11 +409,9 @@ loopInn:
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; WRITING TO OUTPUT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	call CutoffColors ; cmp r12 cutting values exceeding 0 and 255:
+	call CutoffColors ; capping R13-R15 registers values to fin in 0-255 range
 
-	; writing values to output image:
-
-	mov r8, [rbp-80]   ; output     ; setting parameters
+	mov r8, [rbp-80]   ; output                             setting parameters
 	mov r9d, edx       ; inner counter - j (width/x)
 	mov r10d, ecx      ; outer counter - i (height/y)
 	mov r11d, [rbp+56] ; outputStr
@@ -431,18 +419,13 @@ loopInn:
 
 	call Pixel; qword pointer, dword x, dword y, dword stride, dword BPP ; RETURNS TO R8
 
-	mov R10D, [R8]    ; pixel -> R10
 	xor R12, R12
-	mov R12B, R10B ; moving first byte of pixel to R12
+	mov R12B, R15B ; moving first color to R12
 	shl R12, 8
-	shr R10, 8
-	mov R12B, R10B ; moving second byte of pixel to R12
+	mov R12B, R14B ; moving second color to R12
 	shl R12, 8
-	shr R10, 8
-	mov R12B, R10B ; moving third byte of pixel to R12
+	mov R12B, R13B ; moving third byte of pixel to R12
 	mov [R8], R12D ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Xddd swapping colors currently
-
-
 
 	;;;;;;;;;;;;loops;;;;;;;;;;;;;;
 
@@ -452,7 +435,7 @@ loopInn:
 	cmp rdx, rax
 	jl loopInn
 
-	mov rax, [rbp-88] ; picHei
+	mov rax, [rbp+96] ; endLine
 	dec rax
 	dec rax
 	cmp rcx, rax
