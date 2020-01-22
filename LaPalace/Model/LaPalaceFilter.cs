@@ -19,8 +19,8 @@ namespace LaPalace.Model
         readonly int[] HORIZ = { 0, -1, 0, 0, 2, 0, 0, -1, 0 };
         readonly int[] VERTIC = { 0, 0, 0, -1, 2, -1, 0, 0, 0 };
 
-        private int[] pattern;
-        LibraryChoices library;
+        private readonly int[] pattern;
+        readonly LibraryChoices library;
         private Bitmap input;
         private int threadsNo;
 
@@ -70,8 +70,10 @@ namespace LaPalace.Model
             int outputStride = outputData.Stride;
             int inputGPP = Image.GetPixelFormatSize(input.PixelFormat);
             int outputGPP = Image.GetPixelFormatSize(output.PixelFormat);
-            ParallelOptions parallelOptions = new ParallelOptions();
-            parallelOptions.MaxDegreeOfParallelism = threadsNo;
+            ParallelOptions parallelOptions = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = threadsNo
+            };
             int regularPartHeight = input.Height / threadsNo;
             if (library == LibraryChoices.ASM)
             {
